@@ -1,0 +1,41 @@
+{
+  "name": "todo-manager",
+  "version": "1.0.0",
+  "description": "For wd 201",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "NODE_ENV=test npx sequelize-cli db:drop && NODE_ENV=test npx sequelize-cli db:create",
+    "test": "NODE_ENV=test jest --detectOpenHandles",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint",
+      "prettier --write ."
+    ]
+  },
+  "author": "Nithish",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "pg": "^8.8.0",
+    "sequelize": "^6.23.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.28.0",
+    "husky": "^8.0.2",
+    "jest": "^29.3.1",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.7.1",
+    "sequelize-cli": "^6.4.1",
+    "supertest": "^6.2.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nithish1018/l6-submisssion.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nithish1018/l6-submisssion/issues"
+  },
+  "homepage": "https://github.com/nithish1018/l6-submisssion#readme"
+}
