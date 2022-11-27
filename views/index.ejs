@@ -9,7 +9,7 @@
 </head>
 <body>
     <%- include('header.ejs') %>
-    <table>
+   <!-- <table>
         <% for(var i=0; i < allTodos.length;i++){ %>
             <tr>
                 <td>
@@ -19,6 +19,11 @@
 
       <%  } %>
 
-    </table>
+    </table> -->
+    <%- include('todos.ejs') %>
+
 </body>
+<footer>
+    <%- include('footer.ejs') %>
+</footer>
 </html>
