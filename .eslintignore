@@ -1,0 +1,4 @@
+migrations
+models
+app.js
+**/*.js
