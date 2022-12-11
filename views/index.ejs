@@ -1,29 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="./css/style.css" rel="stylesheet">
-    <title>Document</title>
+    <title>Todo-Manager</title>
 </head>
+
 <body>
-    <%- include('header.ejs') %>
-   <!-- <table>
-        <% for(var i=0; i < allTodos.length;i++){ %>
-            <tr>
-                <td>
-                    <%= allTodos[i].title %>
-                </td>
-            </tr>
 
-      <%  } %>
 
-    </table> -->
-    <%- include('todos.ejs') %>
+    <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2">
+            <%- include('header.ejs') %>
 
+                <form>
+                    <div class="flex gap-2 py-4">
+                        <div class="flex-auto">
+                            <input type="text" placeholder="Enter task"
+                                class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required />
+                        </div>
+                        <div class="flex-auto">
+                            <input type="date"
+                                class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm leading-4"
+                                required>
+                        </div>
+                        <div class="flex-none">
+                            <button type="submit"
+                                class="bg-blue-600 text-white px-5 py-1.5 rounded mr-2 mb hover:bg-green-600">
+                                Add</button>
+                        </div>
+                    </div>
+                </form>
+                <div>
+                    <%- include('todos.ejs') %>
+                </div>
+        </div>
+    </div>
 </body>
-<footer>
-    <%- include('footer.ejs') %>
-</footer>
+
 </html>

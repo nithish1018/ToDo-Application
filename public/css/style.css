@@ -1,5 +1,8 @@
 body {
-  color:lavender;
-  background-color: black;
+  color:black;
+  background-color: white;
   font-family: "Times New Roman", Times, serif;
+}
+.todo-item:hover .delete-icon{
+  display: block;
 }
