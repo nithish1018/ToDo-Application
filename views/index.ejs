@@ -8,6 +8,32 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="./css/style.css" rel="stylesheet">
     <title>Todo-Manager</title>
+    <script>
+        function updateTodo(id) {
+            fetch(`/todos/${id}/markAsCompleted`, {
+                method: "put",
+                headers: { "Content-Type": "application/json" },
+            })
+                .then((res) => {
+                    if (res.ok) {
+                        window.location.reload();
+                    }
+                })
+                .catch((err) => console.error(err));
+        }
+        function deleteTodo(id){
+            fetch(`/todos/${id}`,{
+                method: "delete",
+                headers: { "Content-Type": "application/json" },
+            })
+            .then((res) => {
+                    if (res.ok) {
+                        window.location.reload();
+                    }
+                })
+                .catch((err) => console.error(err));
+        }
+    </script>
 </head>
 
 <body>
@@ -36,7 +62,10 @@
                     </div>
                 </form>
                 <div>
-                    <%- include('todos.ejs') %>
+                    <%- include('todos.ejs', {title: "Overdue" , data: overduetodos}) %>
+                        <%- include('todos.ejs', {title: "Due Today" , data: duetodaytodos}) %>
+                            <%- include('todos.ejs', {title: "Due Later" , data: duelatertodos}) %>
+
                 </div>
         </div>
     </div>

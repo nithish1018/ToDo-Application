@@ -12,6 +12,7 @@ app.get("/", async (request, response) => {
     const overduetodos = await Todo.overdue();
     const duetodaytodos = await Todo.dueToday();
     const duelatertodos = await Todo.dueLater();
+
     if (request.accepts("html")) {
       response.render("index", {
         title: "To-Do Manager",
@@ -98,15 +99,9 @@ app.delete("/todos/:id", async function (request, response) {
   // Then, we have to respond back with true/false based on whether the Todo was deleted or not.
   // response.send(true)
   try {
-    const deltodo = await Todo.destroy({
-      where: {
-        id: request.params.id,
-      },
-    });
-    console.log(deltodo);
-    return response.send(deltodo == true);
+    await Todo.remove(request.params.id);
+    return response.json({ success: true });
   } catch (error) {
-    console.log(error);
     return response.status(422).json(error);
   }
 });
