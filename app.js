@@ -1,10 +1,15 @@
 const express = require("express");
+var csrf = require("tiny-csrf");
+var cookieParser = require("cookie-parser");
 const app = express();
 const { Todo } = require("./models");
 const bodyParser = require("body-parser");
 const path = require("path");
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser("shh! some secret string"));
+app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.set("view engine", "ejs");
 app.get("/", async (request, response) => {
@@ -19,6 +24,7 @@ app.get("/", async (request, response) => {
         overduetodos,
         duetodaytodos,
         duelatertodos,
+        csrfToken: request.csrfToken(),
       });
     } else {
       response.json({
@@ -32,7 +38,6 @@ app.get("/", async (request, response) => {
     return response.status(422).json(error);
   }
 });
-app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", function (request, response) {
   response.send("Hello World");

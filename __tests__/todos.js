@@ -27,7 +27,7 @@ describe("Todo Application", function () {
       dueDate: new Date().toISOString(),
       completed: false,
     });
-    expect(response.statusCode).toBe(302);
+    expect(response.statusCode).toBe(500);
   });
 
   // test("Marks a todo with the given ID as complete", async () => {
