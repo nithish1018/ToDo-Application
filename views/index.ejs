@@ -52,7 +52,7 @@
             <%- include('header.ejs') %>
 
                 <form action="/todos" method="post">
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %> "/>
+                    <input type="hidden" name="_csrf" value="<%=csrfToken%>"/>
                     <div class="flex gap-2 py-4">
                         <div class="flex-auto">
                             <input type="text" name="title" placeholder="Enter task"
