@@ -17,6 +17,7 @@ app.get("/", async (request, response) => {
     const overduetodos = await Todo.overdue();
     const duetodaytodos = await Todo.dueToday();
     const duelatertodos = await Todo.dueLater();
+    const completedtodos = await Todo.completedTodos();
 
     if (request.accepts("html")) {
       response.render("index", {
@@ -24,6 +25,7 @@ app.get("/", async (request, response) => {
         overduetodos,
         duetodaytodos,
         duelatertodos,
+        completedtodos,
         csrfToken: request.csrfToken(),
       });
     } else {
@@ -31,6 +33,7 @@ app.get("/", async (request, response) => {
         overduetodos,
         duetodaytodos,
         duelatertodos,
+        completedtodos,
       });
     }
   } catch (error) {
@@ -85,10 +88,11 @@ app.post("/todos", async function (request, response) {
   }
 });
 
-app.put("/todos/:id/markAsCompleted", async function (request, response) {
+app.put("/todos/:id", async function (request, response) {
   const todo = await Todo.findByPk(request.params.id);
   try {
-    const updatedTodo = await todo.markAsCompleted();
+    const todo = await Todo.findByPk(request.params.id);
+    const updatedTodo = await todo.setCompletionStatus(request.body.completed);
     return response.json(updatedTodo);
   } catch (error) {
     console.log(error);
@@ -104,8 +108,8 @@ app.delete("/todos/:id", async function (request, response) {
   // Then, we have to respond back with true/false based on whether the Todo was deleted or not.
   // response.send(true)
   try {
-    await Todo.remove(request.params.id);
-    return response.json({ success: true });
+    const result = await Todo.remove(request.params.id);
+    return response.json({ success: result == 1 });
   } catch (error) {
     return response.status(422).json(error);
   }

@@ -11,12 +11,13 @@
     <title>Todo-Manager</title>
     <script>
       var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-        function updateTodo(id) {
-            fetch(`/todos/${id}/markAsCompleted`, {
+        function updateTodo(id,torf) {
+            fetch(`/todos/${id}`, {
                 method: "put",
                 headers: { "Content-Type": "application/json" },
                 body:JSON.stringify({
-                    "_csrf":token
+                    "_csrf":token,
+                    "completed":torf
                 })
             })
                 .then((res) => {
@@ -74,6 +75,7 @@
                     <%- include('todos.ejs', {title: "Overdue" , data: overduetodos}) %>
                         <%- include('todos.ejs', {title: "Due Today" , data: duetodaytodos}) %>
                             <%- include('todos.ejs', {title: "Due Later" , data: duelatertodos}) %>
+                            <%- include('todos.ejs', {title: "Completed" , data: completedtodos}) %>
 
                 </div>
         </div>
