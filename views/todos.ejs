@@ -1,26 +1,85 @@
-<h5 class="text-xl font-bold mt-4"><%= title %>
- <span class="bg-gray-100 text-gray-800 text-sm font-small mr-2 px-2.5 py-05 rounded dark:bg-gray-200 dark:text-gray-900 justify-center items-center items">
-    <%= data.length %>
-</span>
-</h5>
-<br />
-<ul class="list-none">
-    <% for (let i=0; i < data.length; i++) { %>
-        <li class="cursor-pointer todo-item">
-            <div class="flex gap-2 py-4 items-center px-3 py-2 hover:bg-purple-50 rounded w-fit text-gray-800 text-sm">
-                <input id="checkbox-<%= data[i].id %>" type="checkbox" <%= data[i].completed ?"checked":"" %> onclick="updateTodo(<%= data[i].id %>,<%= !data[i].completed %>)" class="w-4 h-4 text-blue-600 cursor-pointer" />
-                <label for="checkbox-<%= data[i].id %>"  class="cursor-pointer">
-                    <%= data[i].title %>
-                </label>
-                <a href="" class="hidden delete-icon" onclick="deleteTodo(<%= data[i].id %>)">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                    </svg>
-                </a>
-            </div>
-        </li>
-        <% } %>
-</ul>
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="./css/style.css" rel="stylesheet">
+    <title>Todo-Manager</title>
+    <script>
+        var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+        function updateTodo(id, todoStatus) {
+            fetch(`/todos/${id}`, {
+                method: "put",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    "_csrf": token,
+                    "completed": todoStatus
+                })
+            })
+                .then((res) => {
+                    if (res.ok) {
+                        window.location.reload();
+                    }
+                })
+                .catch((err) => console.error(err));
+        }
+        function deleteTodo(id) {
+            fetch(`/todos/${id}`, {
+                method: "delete",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    "_csrf": token
+                })
+            })
+                .then((res) => {
+                    if (res.ok) {
+                        window.location.reload();
+                    }
+                })
+                .catch((err) => console.error(err));
+        }
+    </script>
+</head>
+
+<body>
+
+
+    <div class="grid grid-cols-6">
+        <div class="col-start-3 col-span-2">
+            <%- include('header.ejs') %>
+            <a href="/signout">Sign Out</a>
+            <form action="/todos" method="post">
+                    <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
+                    <div class="flex gap-2 py-4">
+                        <div class="flex-auto">
+                            <input type="text" name="title" placeholder="Enter task"
+                                class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required />
+                        </div>
+                        <div class="flex-auto">
+                            <input type="date" name="dueDate"
+                                class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm leading-4"
+                                required>
+                        </div>
+                        <div class="flex-none">
+                            <button type="submit"
+                                class="bg-blue-600 text-white px-5 py-1.5 rounded mr-2 mb hover:bg-green-600">
+                                Add</button>
+                        </div>
+                    </div>
+                </form>
+                <div>
+                    <%- include('todo.ejs', {title: "Overdue" , data: overduetodos}) %>
+                        <%- include('todo.ejs', {title: "Due Today" , data: duetodaytodos}) %>
+                            <%- include('todo.ejs', {title: "Due Later" , data: duelatertodos}) %>
+                                <%- include('todo.ejs', {title: "Completed" , data: completedtodos}) %>
+
+                </div>
+        </div>
+    </div>
+</body>
+
+</html>
