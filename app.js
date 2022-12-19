@@ -4,7 +4,6 @@ var cookieParser = require("cookie-parser");
 const app = express();
 const { Todo, User } = require("./models");
 const bodyParser = require("body-parser");
-const path = require("path");
 const passport = require("passport");
 const connectEnsureLogin = require("connect-ensure-login");
 const session = require("express-session");
@@ -15,8 +14,13 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser("shh! some secret string"));
 app.use(csrf("this_should_be_32_character_long", ["POST", "PUT", "DELETE"]));
+const path = require("path");
 // eslint-disable-next-line no-undef
 app.use(express.static(path.join(__dirname, "public")));
+const flash = require("connect-flash");
+// eslint-disable-next-line no-undef
+app.set("views", path.join(__dirname, "views"));
+app.use(flash());
 
 app.set("view engine", "ejs");
 app.get("/", async (request, response) => {
@@ -33,6 +37,10 @@ app.use(
     },
   })
 );
+app.use(function (request, response, next) {
+  response.locals.messages = request.flash();
+  next();
+});
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(
@@ -48,11 +56,11 @@ passport.use(
           if (result) {
             return done(null, user);
           } else {
-            return done("Invalid Password");
+            return done(null, false, { message: "Invalid Password" });
           }
         })
-        .catch((error) => {
-          return error;
+        .catch(function () {
+          return done(null, false, { message: "Unrecognized Email" });
         });
     }
   )
@@ -74,6 +82,7 @@ passport.deserializeUser((id, done) => {
 app.get("/", function (request, response) {
   response.send("Hello World");
 });
+
 app.get(
   "/todos",
   connectEnsureLogin.ensureLoggedIn(),
@@ -146,6 +155,15 @@ app.post(
   "/todos",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
+    if (request.body.title.length < 5) {
+      request.flash("error", "Length of the TO-DO Should be atleast 5");
+      return response.redirect("/todos");
+    }
+    let dueDateError = request.body.dueDate;
+    if (dueDateError == false) {
+      request.flash("error", "Please choose any date");
+      return response.redirect("/todos");
+    }
     try {
       await Todo.addTodo({
         title: request.body.title,
@@ -159,7 +177,6 @@ app.post(
     }
   }
 );
-
 app.put(
   "/todos/:id",
   connectEnsureLogin.ensureLoggedIn(),
@@ -179,6 +196,25 @@ app.put(
 );
 app.post("/users", async (request, response) => {
   // console.log("First Name", request.body.firstName);
+  if (request.body.firstName == false) {
+    request.flash("error", "Please Enter Your First Name");
+    return response.redirect("/signup");
+  }
+  if (request.body.lastName == false) {
+    request.flash("error", "Please Enter Your Last Name");
+    return response.redirect("/signup");
+  }
+  if (request.body.password == false) {
+    request.flash("error", "Please Enter Password");
+    return response.redirect("/signup");
+  }
+  if (request.body.password.length < 8) {
+    request.flash(
+      "error",
+      "Password length should be atleast of 8 characters!"
+    );
+    return response.redirect("/signup");
+  }
   const hashedPwd = await bcrypt.hash(request.body.password, saltRounds);
   console.log(hashedPwd);
   try {
@@ -191,11 +227,14 @@ app.post("/users", async (request, response) => {
     request.login(user, (err) => {
       if (err) {
         console.log(err);
+        response.redirect("/");
+      } else {
+        response.redirect("/todos");
       }
-      response.redirect("/todos");
     });
   } catch (error) {
-    console.log(error);
+    request.flash("error", error.message);
+    return response.redirect("/signup");
   }
 });
 app.get("/login", (request, response) => {
@@ -203,7 +242,10 @@ app.get("/login", (request, response) => {
 });
 app.post(
   "/session",
-  passport.authenticate("local", { failureRedirect: "/login" }),
+  passport.authenticate("local", {
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
   (request, response) => {
     console.log(request.user);
     response.redirect("/todos");
