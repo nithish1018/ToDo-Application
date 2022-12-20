@@ -170,6 +170,8 @@ app.post(
         dueDate: request.body.dueDate,
         userId: request.user.id,
       });
+      request.flash("success", "To-Do Added Succesfully");
+
       return response.redirect("/todos");
     } catch (error) {
       console.log(error);

@@ -79,6 +79,13 @@
                       <% } %>
                 </div>
                 <div>
+                    <% if(messages && messages.success && messages.success.length > 0)  { %>
+                        <% for(var i=0; i<messages.success.length; i++) { %>
+                                <li class="text-white rounded px-4 py-4 bg-green-500"> <%= messages.success[i] %></li>
+                        <% } %>
+                      <% } %>
+                </div>
+                <div>
                     <%- include('todo.ejs', {title: "Overdue" , data: overduetodos}) %>
                         <%- include('todo.ejs', {title: "Due Today" , data: duetodaytodos}) %>
                             <%- include('todo.ejs', {title: "Due Later" , data: duelatertodos}) %>
