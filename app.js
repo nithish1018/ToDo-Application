@@ -181,8 +181,8 @@ app.put(
   "/todos/:id",
   connectEnsureLogin.ensureLoggedIn(),
   async function (request, response) {
-    await Todo.findByPk(request.params.id);
     try {
+      await Todo.findByPk(request.params.id);
       const todo = await Todo.findByPk(request.params.id);
       const updatedTodo = await todo.setCompletionStatus(
         request.body.completed

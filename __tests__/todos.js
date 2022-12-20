@@ -47,68 +47,69 @@ describe("Todo Application", function () {
     });
     expect(res.statusCode).toBe(302);
   });
-  // test("User A shouldn't able to update User B's todos", async () => {
-  //   //creating user A account
-  //   //let agent = request.agent(server);
-  //   let result = await agent.get("/signup");
-  //   let csrfToken = extractCsrfToken(result);
-  //   result = await agent.post("/users").send({
-  //     firstName: "Bruce",
-  //     lastName: "Wayne",
-  //     email: "batman@gmail.com",
-  //     password: "batmanvengeance",
-  //     _csrf: csrfToken,
-  //   });
-  //   //create todo
-  //   result = await agent.get("/todos");
-  //   csrfToken = extractCsrfToken(result);
-  //   result = await agent.post("/todos").send({
-  //     title: "Talk with CatWoman",
-  //     dueDate: new Date().toISOString(),
-  //     completed: false,
-  //     _csrf: csrfToken,
-  //   });
-  //   const UserATodoId = result.id;
-  //   //logout the above user
-  //   await agent.get("/signout");
-  //   //create another user account
-  //   result = await agent.get("/signup");
-  //   csrfToken = extractCsrfToken(result);
-  //   result = await agent.post("/users").send({
-  //     firstName: "Peter",
-  //     lastName: "Parker",
-  //     email: "spiderman@gmail.com",
-  //     password: "withgreatpowercomesgreatresposibility",
-  //     _csrf: csrfToken,
-  //   });
-  //   // //create todo
-  //   // result = await agent.get("/todos");
-  //   // csrfToken = extractCsrfToken(result);
-  //   // result= await agent.post("/todos").send({
-  //   //   title: "Meet MJ",
-  //   //   dueDate: new Date().toISOString(),
-  //   //   completed: false,
-  //   //   _csrf: csrfToken,
-  //   // });
-  //   //Try to update first user todo from second user account
-  //   result = await agent.get("/todos");
-  //   csrfToken = extractCsrfToken(result);
-  //   const markCompleteResponse = await agent.put(`/todos/${UserATodoId}`).send({
-  //     _csrf: csrfToken,
-  //     completed: true,
-  //   });
-  //   expect(markCompleteResponse.statusCode).toBe(422);
-  //   //Try marking incomplete
-  //   result = await agent.get("/todos");
-  //   csrfToken = extractCsrfToken(result);
-  //   const markInCompleteResponse = await agent
-  //     .put(`/todos/${UserATodoId}`)
-  //     .send({
-  //       _csrf: csrfToken,
-  //       completed: false,
-  //     });
-  //   expect(markInCompleteResponse.statusCode).toBe(422);
-  // });
+  test("User A shouldn't able to update User B's todos", async () => {
+    //creating user A account
+    //let agent = request.agent(server);
+    let result = await agent.get("/signup");
+    let csrfToken = extractCsrfToken(result);
+    result = await agent.post("/users").send({
+      firstName: "Bruce",
+      lastName: "Wayne",
+      email: "batman@gmail.com",
+      password: "batmanvengeance",
+      _csrf: csrfToken,
+    });
+    //create todo
+    result = await agent.get("/todos");
+    csrfToken = extractCsrfToken(result);
+    result = await agent.post("/todos").send({
+      title: "Talk with CatWoman",
+      dueDate: new Date().toISOString(),
+      completed: false,
+      _csrf: csrfToken,
+    });
+    const UserATodoId = result.id;
+    //logout the above user
+    await agent.get("/signout");
+    //create another user account
+    result = await agent.get("/signup");
+    csrfToken = extractCsrfToken(result);
+    result = await agent.post("/users").send({
+      firstName: "Peter",
+      lastName: "Parker",
+      email: "spiderman@gmail.com",
+      password: "withgreatpowercomesgreatresposibility",
+      _csrf: csrfToken,
+    });
+    // //create todo
+    // result = await agent.get("/todos");
+    // csrfToken = extractCsrfToken(result);
+    // result= await agent.post("/todos").send({
+    //   title: "Meet MJ",
+    //   dueDate: new Date().toISOString(),
+    //   completed: false,
+    //   _csrf: csrfToken,
+    // });
+
+    //Try to update first user todo from second user account
+    result = await agent.get("/todos");
+    csrfToken = extractCsrfToken(result);
+    const markCompleteResponse = await agent.put(`/todos/${UserATodoId}`).send({
+      _csrf: csrfToken,
+      completed: true,
+    });
+    expect(markCompleteResponse.statusCode).toBe(422);
+    //Try marking incomplete
+    result = await agent.get("/todos");
+    csrfToken = extractCsrfToken(result);
+    const markInCompleteResponse = await agent
+      .put(`/todos/${UserATodoId}`)
+      .send({
+        _csrf: csrfToken,
+        completed: false,
+      });
+    expect(markInCompleteResponse.statusCode).toBe(422);
+  });
 
   test("One user shouldn't be able delete other's todos", async () => {
     //creating user A account
@@ -131,6 +132,7 @@ describe("Todo Application", function () {
       completed: false,
       _csrf: csrfToken,
     });
+    console.log("sklhjwhffljejadg", result);
     const UserATodoId = result.id;
     //logout the above user
     await agent.get("/signout");
