@@ -13,8 +13,8 @@
 <body>
     <div class="grid grid-cols-6">
         <div class="col-start-3 col-span-2">
-            <%- include('header.ejs') %> 
-            <h6 class="py-4">Signup as a new user</h6>
+         <a href="/" class="hover:text-green-400"> <%- include('header.ejs') %> </a>
+            <h6 class="py-4 text-xl">Signup as a new user</h6>
             <div>
                 <% if(messages && messages.error && messages.error.length > 0)  { %>
                     <% for(var i=0; i<messages.error.length; i++) { %>

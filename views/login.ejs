@@ -13,8 +13,8 @@
 <body>
     <div class="grid grid-cols-6">
         <div class="col-start-3 col-span-2">
-            <%- include('header.ejs') %> 
-            <h6 class="py-4">Login To Your Account</h6>
+            <a href="/" class="hover:text-green-400"><%- include('header.ejs') %> </a>
+            <h6 class="py-4 text-xl">Login To Your Account</h6>
             <form action="/session" method="post">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <div class="py-3">
