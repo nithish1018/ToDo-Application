@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="<%= csrfToken %>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="./css/style.css" rel="stylesheet">
-    <title>Todo-Manager</title>
+    <title>Todos Page</title>
     <script>
         var token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
         function updateTodo(id, todoStatus) {
@@ -47,11 +47,12 @@
 
 <body>
 
-
     <div class="grid grid-cols-6">
         <div class="col-start-3 col-span-2">
-            <%- include('header.ejs') %>
-            <a href="/signout">Sign Out</a>
+    <h3 class="px-3 py-5 text-2xl text-red-600"> To-Do's Of <%= userName %> </h3>
+
+            <a  class="text-xl hover:text-green-400" href="/home">Home </a> <br>
+            <a class="text-xl hover:text-green-400 " href="/signout">Sign Out</a>
             <form action="/todos" method="post">
                     <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
                     <div class="flex gap-2 py-4">

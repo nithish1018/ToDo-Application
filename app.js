@@ -23,12 +23,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use(flash());
 
 app.set("view engine", "ejs");
-app.get("/", async (request, response) => {
-  response.render("index", {
-    title: "ToDo-Application",
-    csrfToken: request.csrfToken(),
-  });
-});
+
 app.use(
   session({
     secret: "my-secret-super-key-10181810",
@@ -79,9 +74,9 @@ passport.deserializeUser((id, done) => {
     });
 });
 
-app.get("/", function (request, response) {
-  response.send("Hello World");
-});
+// app.get("/", function (request, response) {
+//   response.send("Hello World");
+// });
 
 app.get(
   "/todos",
@@ -93,6 +88,9 @@ app.get(
       const duetodaytodos = await Todo.dueToday(loggedInUserId);
       const duelatertodos = await Todo.dueLater(loggedInUserId);
       const completedtodos = await Todo.completedTodos(loggedInUserId);
+      const firstName = request.user.firstName;
+      const lastName = request.user.lastName;
+      const userName = firstName + " " + lastName;
 
       if (request.accepts("html")) {
         response.render("todos", {
@@ -101,6 +99,7 @@ app.get(
           duetodaytodos,
           duelatertodos,
           completedtodos,
+          userName,
           csrfToken: request.csrfToken(),
         });
       } else {
@@ -238,6 +237,22 @@ app.post("/users", async (request, response) => {
     request.flash("error", error.message);
     return response.redirect("/signup");
   }
+});
+app.get("/", async (request, response) => {
+  if (request.user) {
+    return response.redirect("/todos");
+  } else {
+    response.render("index", {
+      title: "ToDo-Application",
+      csrfToken: request.csrfToken(),
+    });
+  }
+});
+app.get("/home", async (request, response) => {
+  return response.render("index", {
+    title: "ToDo-Application",
+    csrfToken: request.csrfToken(),
+  });
 });
 app.get("/login", (request, response) => {
   response.render("login", { title: "Login", csrfToken: request.csrfToken() });
